@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building2, Store, User as UserIcon } from "lucide-react";
-import { Button, Card } from "@/components/ui";
+import { Button, Card, Select } from "@/components/ui";
 import { useAuth } from "@/context/AuthContext";
 import { getVendors } from "@/lib/db";
 import type { User } from "@/lib/types";
@@ -10,6 +10,8 @@ export function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [role, setRole] = useState<User["role"]>("client");
+  const [identifierType, setIdentifierType] = useState<"email" | "phone">("email");
+  const [identifier, setIdentifier] = useState("");
   const [name, setName] = useState("");
   const [vendorId, setVendorId] = useState("");
   const [error, setError] = useState("");
@@ -17,6 +19,29 @@ export function Login() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    const trimmedIdentifier = identifier.trim();
+    if (!trimmedIdentifier) {
+      setError(identifierType === "email" ? "Please enter your email address." : "Please enter your phone number.");
+      return;
+    }
+    if (identifierType === "email") {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(trimmedIdentifier)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+    } else {
+      if (!/^\d+$/.test(trimmedIdentifier)) {
+        setError("Please enter only numbers for the phone number.");
+        return;
+      }
+      if (trimmedIdentifier.length < 7) {
+        setError("Please enter a valid phone number.");
+        return;
+      }
+    }
+
     if (!name.trim()) {
       setError("Please enter your name / company name.");
       return;
@@ -25,6 +50,7 @@ export function Login() {
       setError("Please select your vendor profile.");
       return;
     }
+
     const user: User = { role, name: name.trim(), vendorId: role === "vendor" ? vendorId : undefined };
     login(user);
     navigate(role === "vendor" ? "/vendor/dashboard" : "/client/dashboard");
@@ -61,6 +87,48 @@ export function Login() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              {identifierType === "email" ? "Email address" : "Phone number"}
+            </label>
+            <div className="mb-2 inline-flex overflow-hidden rounded-full border border-slate-200 bg-white text-xs shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <button
+                type="button"
+                onClick={() => setIdentifierType("email")}
+                className={`px-4 py-2 transition-colors ${
+                  identifierType === "email"
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
+                }`}
+              >
+                Email
+              </button>
+              <button
+                type="button"
+                onClick={() => setIdentifierType("phone")}
+                className={`px-4 py-2 transition-colors ${
+                  identifierType === "phone"
+                    ? "bg-indigo-600 text-white"
+                    : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
+                }`}
+              >
+                Phone
+              </button>
+            </div>
+            <input
+              type={identifierType === "email" ? "email" : "tel"}
+              inputMode={identifierType === "phone" ? "numeric" : "email"}
+              value={identifier}
+              onChange={(e) =>
+                setIdentifier(
+                  identifierType === "phone" ? e.target.value.replace(/\D/g, "") : e.target.value
+                )
+              }
+              placeholder={identifierType === "email" ? "jane@company.com" : "Enter phone number"}
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
               {role === "vendor" ? "Contact Name" : "Company / Client Name"}
             </label>
             <div className="relative">
@@ -69,7 +137,7 @@ export function Login() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={role === "vendor" ? "Jane Smith" : "Apex Manufacturing"}
-                className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
@@ -77,18 +145,14 @@ export function Login() {
           {role === "vendor" && (
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Vendor Profile</label>
-              <select
-                value={vendorId}
-                onChange={(e) => setVendorId(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-              >
+              <Select value={vendorId} onChange={(e) => setVendorId(e.target.value)}>
                 <option value="">Select your company</option>
                 {getVendors().map((v) => (
-                  <option key={v.id} value={v.id}>
+                  <option key={v.id} value={v.id} className="text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                     {v.name} ({v.category})
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
 

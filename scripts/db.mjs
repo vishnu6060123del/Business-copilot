@@ -6,8 +6,21 @@ import { DsqlSigner } from "@aws-sdk/dsql-signer"
 
 const { Pool } = pg
 
-const region = process.env.AWS_REGION
-const hostname = process.env.PGHOST
+// Defensive: strip an accidental "NAME=" prefix and surrounding quotes/whitespace
+// (e.g. an env var saved as "AWS_REGION=ap-southeast-2" instead of "ap-southeast-2").
+function clean(name) {
+  let v = process.env[name]
+  if (!v) return v
+  v = v.trim()
+  if (v.startsWith(`${name}=`)) v = v.slice(name.length + 1)
+  return v.replace(/^['"]|['"]$/g, "").trim()
+}
+
+const region = clean("AWS_REGION")
+const hostname = clean("PGHOST")
+// Normalize the static credentials the AWS SDK reads from the environment.
+process.env.AWS_ACCESS_KEY_ID = clean("AWS_ACCESS_KEY_ID")
+process.env.AWS_SECRET_ACCESS_KEY = clean("AWS_SECRET_ACCESS_KEY")
 
 if (!region || !hostname) {
   console.error("[scripts] Missing AWS_REGION or PGHOST environment variables.")

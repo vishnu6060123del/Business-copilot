@@ -1,12 +1,12 @@
 "use client"
 
-import { HashRouter } from "react-router-dom"
+import { BrowserRouter } from "react-router-dom"
 import App from "@/App"
 
 export default function ClientApp() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <App />
-    </HashRouter>
+    </BrowserRouter>
   )
 }

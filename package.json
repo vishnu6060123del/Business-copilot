@@ -1,17 +1,22 @@
 {
-  "name": "react-vite-tailwind",
+  "name": "business-copilot",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "node --env-file-if-exists=/vercel/share/.env.project scripts/migrate.mjs",
+    "db:seed": "node --env-file-if-exists=/vercel/share/.env.project scripts/seed.mjs"
   },
   "dependencies": {
+    "@aws-sdk/dsql-signer": "^3.700.0",
+    "@vercel/functions": "^2.0.0",
     "clsx": "2.1.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.21.0",
+    "next": "^16.0.0",
     "pdfjs-dist": "^5.6.205",
     "pg": "^8.22.0",
     "react": "19.2.6",
@@ -22,14 +27,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "4.1.17",
+    "@tailwindcss/postcss": "4.1.17",
     "@types/node": "22.19.17",
+    "@types/pg": "^8.11.10",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
-    "typescript": "5.9.3",
-    "vite": "7.3.2",
-    "vite-plugin-singlefile": "2.3.0"
+    "typescript": "5.9.3"
   }
 }

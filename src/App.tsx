@@ -1,24 +1,24 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { Layout } from "@/components/Layout";
-import { Login } from "@/pages/Login";
+import { Login } from "@/screens/Login";
 
-import { Dashboard } from "@/pages/Dashboard";
-import { ChatPage } from "@/pages/Chat";
-import { ComparePage } from "@/pages/Compare";
-import { UploadPage } from "@/pages/Upload";
-import { ContractDetail } from "@/pages/ContractDetail";
-import { ClientVendors } from "@/pages/client/Vendors";
-import { ClientVendorDetail } from "@/pages/client/VendorDetail";
-import { ClientRequirement } from "@/pages/client/Requirement";
+import { Dashboard } from "@/screens/Dashboard";
+import { ChatPage } from "@/screens/Chat";
+import { ComparePage } from "@/screens/Compare";
+import { UploadPage } from "@/screens/Upload";
+import { ContractDetail } from "@/screens/ContractDetail";
+import { ClientVendors } from "@/screens/client/Vendors";
+import { ClientVendorDetail } from "@/screens/client/VendorDetail";
+import { ClientRequirement } from "@/screens/client/Requirement";
 
-import { VendorDashboard } from "@/pages/vendor/Dashboard";
-import { VendorProfile } from "@/pages/vendor/Profile";
-import { VendorProducts } from "@/pages/vendor/Products";
-import { VendorClientLog } from "@/pages/vendor/ClientLog";
-import { VendorPayments } from "@/pages/vendor/Payments";
-import { VendorSubscription } from "@/pages/vendor/Subscription";
-import { VendorHistory } from "@/pages/vendor/History";
+import { VendorDashboard } from "@/screens/vendor/Dashboard";
+import { VendorProfile } from "@/screens/vendor/Profile";
+import { VendorProducts } from "@/screens/vendor/Products";
+import { VendorClientLog } from "@/screens/vendor/ClientLog";
+import { VendorPayments } from "@/screens/vendor/Payments";
+import { VendorSubscription } from "@/screens/vendor/Subscription";
+import { VendorHistory } from "@/screens/vendor/History";
 
 function FullScreenLoader({ label }: { label: string }) {
   return (
@@ -46,13 +46,13 @@ function ProtectedApp() {
   return <Layout />;
 }
 
-function ClientOnly({ children }: { children: JSX.Element }) {
+function ClientOnly({ children }: { children: React.ReactElement }) {
   const { user } = useAuth();
   if (user && user.role !== "client") return <Navigate to="/vendor/dashboard" replace />;
   return children;
 }
 
-function VendorOnly({ children }: { children: JSX.Element }) {
+function VendorOnly({ children }: { children: React.ReactElement }) {
   const { user } = useAuth();
   if (user && user.role !== "vendor") return <Navigate to="/client/dashboard" replace />;
   return children;

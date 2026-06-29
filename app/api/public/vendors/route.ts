@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
-import { query } from "@/lib/db"
-import { mapVendor } from "@/lib/mappers"
+import { query } from "@server/db"
+import { mapVendor } from "@server/mappers"
 
 export const dynamic = "force-dynamic"
 

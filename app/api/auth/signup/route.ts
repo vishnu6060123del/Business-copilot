@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { query } from "@/lib/db"
-import { createSession, hashPassword } from "@/lib/auth"
-import { genId } from "@/lib/mappers"
+import { query } from "@server/db"
+import { createSession, hashPassword } from "@server/auth"
+import { genId } from "@server/mappers"
 
 export const dynamic = "force-dynamic"
 

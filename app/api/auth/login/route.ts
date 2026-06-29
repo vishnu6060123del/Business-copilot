@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { query } from "@/lib/db"
-import { createSession, verifyPassword } from "@/lib/auth"
+import { query } from "@server/db"
+import { createSession, verifyPassword } from "@server/auth"
 
 export const dynamic = "force-dynamic"
 

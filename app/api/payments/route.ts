@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { query } from "@/lib/db"
-import { requireUser } from "@/lib/auth"
-import { genId, mapPayment } from "@/lib/mappers"
+import { query } from "@server/db"
+import { requireUser } from "@server/auth"
+import { genId, mapPayment } from "@server/mappers"
 
 export const dynamic = "force-dynamic"
 

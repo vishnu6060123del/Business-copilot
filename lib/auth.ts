@@ -1,8 +1,8 @@
 import { randomBytes, scrypt as _scrypt, timingSafeEqual } from "node:crypto"
 import { promisify } from "node:util"
 import { cookies } from "next/headers"
-import { query } from "@/lib/db"
-import { genId } from "@/lib/mappers"
+import { query } from "./db"
+import { genId } from "./mappers"
 
 const scrypt = promisify(_scrypt)
 const SESSION_COOKIE = "bc_session"

@@ -21,6 +21,10 @@ if (accessKeyId) process.env.AWS_ACCESS_KEY_ID = accessKeyId
 if (secretAccessKey) process.env.AWS_SECRET_ACCESS_KEY = secretAccessKey
 if (region) process.env.AWS_REGION = region
 
+if (!region || !hostname) {
+  throw new Error("Missing AWS_REGION or PGHOST environment variables for Aurora DSQL.")
+}
+
 const signer = new DsqlSigner({
   region,
   hostname,
@@ -47,7 +51,12 @@ if (!globalForPool.__dsqlPool) {
   attachDatabasePool(pool)
 }
 
-export async function query<T = Record<string, unknown>>(text: string, params?: unknown[]) {
+import type { QueryResultRow } from "pg"
+
+export async function query<T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  params?: unknown[],
+) {
   return pool.query<T>(text, params)
 }
 

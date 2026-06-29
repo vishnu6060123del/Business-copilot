@@ -76,6 +76,9 @@ export interface Subscription {
   price: number;
   renewDate: string;
   status: "active" | "inactive";
+  // Client-only UI fields (not persisted to the database).
+  paymentMethod?: "online" | "card" | "cash" | "";
+  cardDetails?: { cardholderName?: string; cardNumber?: string; expiryDate?: string; cvv?: string };
 }
 
 export interface Payment {
